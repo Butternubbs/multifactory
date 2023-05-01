@@ -7,6 +7,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
@@ -22,6 +23,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 import net.multifactory.MultiblockItemStackHandler;
+import net.multifactory.ScannerMultiblock;
 import net.multifactory.init.MultifactoryModBlockEntities;
 import net.multifactory.screen.ScannerMenu;
 import javax.annotation.Nullable;
@@ -89,6 +91,7 @@ public class ScannerBlockEntity extends BlockEntity implements MenuProvider {
 	@Override
     public void onLoad() {
         super.onLoad();
+        this.resetLeader();
         lazyItemHandler = LazyOptional.of(() -> itemHandler);
     }
 
@@ -176,6 +179,9 @@ public class ScannerBlockEntity extends BlockEntity implements MenuProvider {
     //Set the leader (inventory to mimic) for this entity
     public void setLeader(ScannerBlockEntity sbe){
         leader = sbe;
+    }
+    public void resetLeader(){
+        ScannerMultiblock.assembleMultiblock(this.getLevel(), this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ());
     }
     public void clearLeader(){
         leader = this;
