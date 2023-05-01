@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "multifactory:scanner_top",
+    "multifactory:scanner_bottom"
+  ]
+}

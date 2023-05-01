@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "multifactory:block/scanner_bottom"
+    }
+  }
+}

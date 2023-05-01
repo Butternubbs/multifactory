@@ -1,0 +1,9 @@
+{
+  "parent": "multifactory:custom/scanner_top",
+  "textures": {
+    "all": "multifactory:blocks/scanner_top",
+    "particle": "multifactory:blocks/glass",
+    "6": "multifactory:blocks/scanner_top"
+  },
+  "render_type": "cutout"
+}

@@ -1,0 +1,5 @@
+#List of recipes for the scanner. To add a recipe, add 
+#<shape> -> <item> <quantity>
+#where shape is the name of a .nbt file in the structures folder.
+recipe_list = ["hopper -> minecraft:hopper 1"]
+
