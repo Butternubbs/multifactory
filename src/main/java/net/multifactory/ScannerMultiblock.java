@@ -37,12 +37,15 @@ public class ScannerMultiblock {
 		//Find the connected scanner block with the lowest x and z values, and save that in the origin object.
 		double[] origin = new double[]{x, y, z};
 		Block placedType = world.getBlockState(new BlockPos(x, y, z)).getBlock();
-		for (int index0 = 0; index0 < 12; index0++) {
+		int xSearch = 0, zSearch = 0;
+		while (xSearch < 12 && zSearch < 12) {
 			if ((world.getBlockState(new BlockPos(origin[0] - 1, origin[1], origin[2]))).getBlock() == placedType) {
+				xSearch++;
 				origin[0] -= 1;
 				continue;
 			}
 			if ((world.getBlockState(new BlockPos(origin[0], origin[1], origin[2] - 1))).getBlock() == placedType) {
+				zSearch++;
 				origin[2] -= 1;
 				continue;
 			}

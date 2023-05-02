@@ -12,6 +12,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.entity.AreaEffectCloud;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.Containers;
@@ -34,11 +36,11 @@ import org.jetbrains.annotations.NotNull;
 public class ScannerBlockEntity extends BlockEntity implements MenuProvider {
 
     ScannerBlockEntity leader = this;
-
 	private final MultiblockItemStackHandler itemHandler = new MultiblockItemStackHandler(this, 4);
 
     private LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.empty();
 
+    private AreaEffectCloud forcefield;
     protected final ContainerData data;
 	private int[] structure = new int[6]; //Stores origin and limit of structure area, [xo yo zo xl yl zl]
 	private int[] size = new int[3]; //Stores size of structure

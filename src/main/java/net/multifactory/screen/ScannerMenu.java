@@ -15,6 +15,7 @@ import net.multifactory.init.MultifactoryModMenuTypes;
 
 public class ScannerMenu extends AbstractContainerMenu {
     public final ScannerBlockEntity blockEntity;
+    public final ScannerBlockEntity entityClicked;
     private final Level level;
     private final ContainerData data;
 
@@ -25,6 +26,7 @@ public class ScannerMenu extends AbstractContainerMenu {
     public ScannerMenu(int id, Inventory inv, BlockEntity entity, ContainerData data) {
         super(MultifactoryModMenuTypes.SCANNER_MENU.get(), id);
         checkContainerSize(inv, 3);
+        entityClicked = (ScannerBlockEntity) entity;
         blockEntity = ((ScannerBlockEntity) entity).getLeader();
         this.level = inv.player.level;
         this.data = data;
@@ -33,9 +35,9 @@ public class ScannerMenu extends AbstractContainerMenu {
         addPlayerHotbar(inv);
 
         this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(handler -> {
-            this.addSlot(new SlotItemHandler(handler, 0, 12, 15));
-            this.addSlot(new SlotItemHandler(handler, 1, 86, 15));
-            this.addSlot(new SlotItemHandler(handler, 2, 86, 60));
+            this.addSlot(new SlotItemHandler(handler, 0, 136, 27));
+            this.addSlot(new SlotItemHandler(handler, 1, 136, 45));
+            this.addSlot(new SlotItemHandler(handler, 2, 136, 63));
         });
 
         addDataSlots(data);
@@ -94,7 +96,7 @@ public class ScannerMenu extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(Player player) {
-        BlockPos pos = blockEntity.getBlockPos();
+        BlockPos pos = entityClicked.getBlockPos();
         return player.distanceToSqr((double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D) <= 64.0D;
         //return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()),
         //        player, MultifactoryModBlocks.SCANNER_BOTTOM.get());
@@ -103,14 +105,14 @@ public class ScannerMenu extends AbstractContainerMenu {
     private void addPlayerInventory(Inventory playerInventory) {
         for (int i = 0; i < 3; ++i) {
             for (int l = 0; l < 9; ++l) {
-                this.addSlot(new Slot(playerInventory, l + i * 9 + 9, 8 + l * 18, 86 + i * 18));
+                this.addSlot(new Slot(playerInventory, l + i * 9 + 9, 8 + l * 18, 110 + i * 18));
             }
         }
     }
 
     private void addPlayerHotbar(Inventory playerInventory) {
         for (int i = 0; i < 9; ++i) {
-            this.addSlot(new Slot(playerInventory, i, 8 + i * 18, 144));
+            this.addSlot(new Slot(playerInventory, i, 8 + i * 18, 168));
         }
     }
 }

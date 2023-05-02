@@ -13,7 +13,10 @@ public class ScannerBottomClientDisplayRandomTickProcedure {
 		BlockEntity entity = world.getBlockEntity(new BlockPos(x, y, z));
 		if(entity instanceof ScannerBlockEntity){
 			if(((ScannerBlockEntity) entity).getStructSize()[0] != 0)
-				world.addParticle((SimpleParticleType) (MultifactoryModParticleTypes.SCANNER_UP.get()), (x + 0.5 + 0.2 * Math.random()), (y + 0.8), (z + 0.5 + 0.2 * Math.random()), 0, 1, 0);
+				world.addParticle((SimpleParticleType) (MultifactoryModParticleTypes.SCANNER_UP.get()),
+				 (x + 0.5 + 0.2 * Math.random()), 
+				 (y + 0.8 + (((ScannerBlockEntity) entity).getStructSize()[1] - 2) * Math.random()), 
+				 (z + 0.5 + 0.2 * Math.random()), 0, 1, 0);
 		}
 		
 	}
