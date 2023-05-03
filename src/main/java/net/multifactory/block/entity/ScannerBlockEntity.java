@@ -40,14 +40,15 @@ public class ScannerBlockEntity extends BlockEntity implements MenuProvider {
 
     private LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.empty();
 
-    private AreaEffectCloud forcefield;
     protected final ContainerData data;
 	private int[] structure = new int[6]; //Stores origin and limit of structure area, [xo yo zo xl yl zl]
 	private int[] size = new int[3]; //Stores size of structure
+    private String activeRecipe;
 
 	public ScannerBlockEntity(BlockPos position, BlockState state) {
 		super(MultifactoryModBlockEntities.SCANNER.get(), position, state);
         System.out.println("Created a new ScannerBlockEntity");
+        this.activeRecipe = "";
         this.data = new ContainerData(){
             @Override
             public int get(int index) {
@@ -109,6 +110,7 @@ public class ScannerBlockEntity extends BlockEntity implements MenuProvider {
 		itemHandler.deserializeNBT(compound.getCompound("inventory"));
 		structure = compound.getIntArray("structure");
 		size = compound.getIntArray("structsize");
+        activeRecipe = compound.getString("activeRecipe");
 	}
 
 	@Override
@@ -117,6 +119,7 @@ public class ScannerBlockEntity extends BlockEntity implements MenuProvider {
 		compound.put("inventory", itemHandler.serializeNBT());
 		compound.putIntArray("structure", structure);
 		compound.putIntArray("structsize", size);
+        compound.putString("activeRecipe", activeRecipe);
 	}
 
 	public void drops() {
@@ -193,5 +196,11 @@ public class ScannerBlockEntity extends BlockEntity implements MenuProvider {
     }
     public ItemStackHandler getItemHandler(){
         return itemHandler;
+    }
+    public String getActiveRecipe(){
+        return activeRecipe;
+    }
+    public void setActiveRecipe(String recipe){
+        activeRecipe = recipe;
     }
 }

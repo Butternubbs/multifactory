@@ -20,4 +20,9 @@ public class ListButton extends Button {
         this.scrollAmt = scroll;
         this.y = baseY - (this.getHeight() * scrollAmt);
     }
+
+    @Override
+    public void render(PoseStack p_93657_, int p_93658_, int p_93659_, float p_93660_) {
+        //Do nothing. The ButtonList will handle this
+    }
 }

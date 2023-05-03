@@ -29,12 +29,20 @@ public class ButtonList extends AbstractWidget {
 
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+        for(ListButton button : buttons){
+            button.visible = false;
+        }
         for(int i = 0; i < buttons.size() && i < numDisplayed; i++){
             ListButton button = buttons.get(i + scrollAmt);
+            button.visible = true;
             button.renderButton(poseStack, mouseX, mouseY, partialTick);
-            if(button.isHoveredOrFocused()) System.out.println("button " + i + scrollAmt + " hovered");
         }
-        if(this.isHoveredOrFocused()) System.out.println("list hovered");
+    }
+
+    @Override
+    public void onClick(double mouseX, double mouseY) {
+        System.out.println("Clicked list: " + mouseX + " " + mouseY);
+        buttons.get((int)((mouseY - this.y)/18) + scrollAmt).onPress();
     }
 
     @Override
@@ -55,5 +63,9 @@ public class ButtonList extends AbstractWidget {
 
     public int numDisplay(){
         return numDisplayed;
+    }
+
+    public ArrayList<ListButton> getButtons(){
+        return buttons;
     }
 }

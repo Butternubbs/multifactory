@@ -1,5 +1,7 @@
 package net.multifactory.screen;
 
+import java.util.ArrayList;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
@@ -9,7 +11,11 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.multifactory.BlockRecipe;
 import net.multifactory.MultifactoryMod;
+import net.multifactory.block.entity.ScannerBlockEntity;
 import net.multifactory.screen.ScrollButton.IScrollListener;
 
 public class ScannerScreen extends AbstractContainerScreen<ScannerMenu> {
@@ -41,43 +47,31 @@ public class ScannerScreen extends AbstractContainerScreen<ScannerMenu> {
         super.init();
 
         buttonList = new ButtonList(19+this.leftPos, 18+this.topPos, 86, 70, 4);
-        buttonList.addButton(0, 0, 86, 18, "Button 1", new Button.OnPress() {
-            @Override
-            public void onPress(Button p_93751_) {
-                System.out.println("Pressed button 1");
-            }
-        });
-        buttonList.addButton(0, 18, 86, 18, "Button 2", new Button.OnPress() {
-            @Override
-            public void onPress(Button p_93751_) {
-                System.out.println("Pressed button 2");
-            }
-        });
-        buttonList.addButton(0, 36, 86, 18, "Button 3", new Button.OnPress() {
-            @Override
-            public void onPress(Button p_93751_) {
-                System.out.println("Pressed button 3");
-            }
-        });
-        buttonList.addButton(0, 54, 86, 18, "Button 4", new Button.OnPress() {
-            @Override
-            public void onPress(Button p_93751_) {
-                System.out.println("Pressed button 3");
-            }
-        });
-        buttonList.addButton(0, 72, 86, 18, "Button 5", new Button.OnPress() {
-            @Override
-            public void onPress(Button p_93751_) {
-                System.out.println("Pressed button 3");
-            }
-        });
-        buttonList.addButton(0, 90, 86, 18, "Button 6", new Button.OnPress() {
-            @Override
-            public void onPress(Button p_93751_) {
-                System.out.println("Pressed button 3");
-            }
-        });
+        ScannerMenu menu = this.getMenu();
+        //buttonList.addButton(0, 0, 86, 18, "Button 1", (Button button) -> System.out.println("button 1 pressed"));
+        //buttonList.addButton(0, 18, 86, 18, "Button 2", (Button button) -> System.out.println("button 2 pressed"));
+        //buttonList.addButton(0, 36, 86, 18, "Button 3", (Button button) -> System.out.println("button 3 pressed"));
+        //buttonList.addButton(0, 54, 86, 18, "Button 4", (Button button) -> System.out.println("button 4 pressed"));
+        //buttonList.addButton(0, 72, 86, 18, "Button 5", (Button button) -> System.out.println("button 5 pressed"));
+        //buttonList.addButton(0, 90, 86, 18, "Button 6", (Button button) -> System.out.println("button 6 pressed"));
+
+        ArrayList<BlockRecipe> recipes = menu.getRecipes();
+        for(int i = 0, n = recipes.size(); i < n; i++){
+            String name = recipes.get(i).getName();
+            buttonList.addButton(0, i*18, 86, 18, name, new Button.OnPress() {
+                @Override
+                public void onPress(Button p_93751_) {
+                    ScannerBlockEntity be = menu.blockEntity;
+                    be.setActiveRecipe(name);
+                    be.getLevel().sendBlockUpdated(be.getBlockPos(), be.getBlockState(), be.getBlockState(), Block.UPDATE_ALL);
+                }
+            });
+        }
         this.addRenderableWidget(buttonList);
+        ArrayList<ListButton> buttons = buttonList.getButtons();
+        for(ListButton button : buttons){
+            this.addWidget(button);
+        }
 
         scrollButton = new ScrollButton(106+this.leftPos, 19+this.topPos, 12, 70, TEXTURE, 176, 0, 12, 15, 1, true, 0.1F, new IScrollListener() {
 

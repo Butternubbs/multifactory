@@ -1,23 +1,25 @@
 package net.multifactory.screen;
 
+import java.util.ArrayList;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.SlotItemHandler;
+import net.multifactory.BlockRecipe;
 import net.multifactory.block.entity.ScannerBlockEntity;
 import net.multifactory.init.MultifactoryModMenuTypes;
 
 public class ScannerMenu extends AbstractContainerMenu {
     public final ScannerBlockEntity blockEntity;
     public final ScannerBlockEntity entityClicked;
-    private final Level level;
     private final ContainerData data;
+    private ArrayList<BlockRecipe> validRecipes;
 
     public ScannerMenu(int id, Inventory inv, FriendlyByteBuf extraData) {
         this(id, inv, inv.player.level.getBlockEntity(extraData.readBlockPos()), new SimpleContainerData(0));
@@ -28,8 +30,8 @@ public class ScannerMenu extends AbstractContainerMenu {
         checkContainerSize(inv, 3);
         entityClicked = (ScannerBlockEntity) entity;
         blockEntity = ((ScannerBlockEntity) entity).getLeader();
-        this.level = inv.player.level;
         this.data = data;
+        validRecipes = BlockRecipe.getBlockRecipes(((ScannerBlockEntity) entity).getStructSize());
 
         addPlayerInventory(inv);
         addPlayerHotbar(inv);
@@ -114,5 +116,9 @@ public class ScannerMenu extends AbstractContainerMenu {
         for (int i = 0; i < 9; ++i) {
             this.addSlot(new Slot(playerInventory, i, 8 + i * 18, 168));
         }
+    }
+
+    public ArrayList<BlockRecipe> getRecipes(){
+        return validRecipes;
     }
 }
