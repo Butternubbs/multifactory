@@ -16,6 +16,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.multifactory.BlockRecipe;
 import net.multifactory.MultifactoryMod;
 import net.multifactory.block.entity.ScannerBlockEntity;
+import net.multifactory.network.ModMessages;
+import net.multifactory.network.ScannerPacket;
 import net.multifactory.screen.ScrollButton.IScrollListener;
 
 public class ScannerScreen extends AbstractContainerScreen<ScannerMenu> {
@@ -61,9 +63,7 @@ public class ScannerScreen extends AbstractContainerScreen<ScannerMenu> {
             buttonList.addButton(0, i*18, 86, 18, name, new Button.OnPress() {
                 @Override
                 public void onPress(Button p_93751_) {
-                    ScannerBlockEntity be = menu.blockEntity;
-                    be.setActiveRecipe(name);
-                    be.getLevel().sendBlockUpdated(be.getBlockPos(), be.getBlockState(), be.getBlockState(), Block.UPDATE_ALL);
+                    ModMessages.sendToServer(new ScannerPacket(menu.blockEntity.getBlockPos(), name));
                 }
             });
         }

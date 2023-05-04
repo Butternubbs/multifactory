@@ -24,6 +24,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.core.BlockPos;
+import net.multifactory.BlockRecipe;
 import net.multifactory.ScannerMultiblock;
 import net.multifactory.TestBoundingBox;
 import net.multifactory.block.entity.ScannerBlockEntity;
@@ -87,7 +88,7 @@ public class ScannerTopBlock extends Block implements EntityBlock {
 	public void neighborChanged(BlockState blockstate, Level world, BlockPos pos, Block neighborBlock, BlockPos fromPos, boolean moving) {
 		super.neighborChanged(blockstate, world, pos, neighborBlock, fromPos, moving);
 		if (world.getBestNeighborSignal(pos) > 0) {
-			TestBoundingBox.checkShape(world, pos);
+			BlockRecipe.checkShape(world, pos);
 		}
 	}
 

@@ -42,7 +42,9 @@ public class ButtonList extends AbstractWidget {
     @Override
     public void onClick(double mouseX, double mouseY) {
         System.out.println("Clicked list: " + mouseX + " " + mouseY);
-        buttons.get((int)((mouseY - this.y)/18) + scrollAmt).onPress();
+        int indexClicked = (int)((mouseY - this.y)/18) + scrollAmt;
+        if(indexClicked < buttons.size())
+            buttons.get((int)((mouseY - this.y)/18) + scrollAmt).onPress();
     }
 
     @Override

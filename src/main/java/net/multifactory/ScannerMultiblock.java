@@ -12,6 +12,7 @@ import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.nbt.CompoundTag;
 import java.lang.Math;
 import java.util.List;
+import java.util.Scanner;
 import java.util.Set;
 
 import net.multifactory.block.entity.ScannerBlockEntity;
@@ -201,6 +202,28 @@ public class ScannerMultiblock {
 		}
 	}
 
+	public static void setRecipe(BlockPos changedPos, String recipeName, LevelAccessor world){
+		ScannerBlockEntity changedEntity = (ScannerBlockEntity) world.getBlockEntity(changedPos);
+		int[] structureBounds = changedEntity.getStructure();
+		int[] structSize = changedEntity.getStructSize();
+		for (BlockPos pos : BlockPos.betweenClosed(
+			new BlockPos(structureBounds[0], structureBounds[1], structureBounds[2]),
+			new BlockPos(structureBounds[3], structureBounds[1], structureBounds[5])
+		)) { 
+			ScannerBlockEntity be = (ScannerBlockEntity) world.getBlockEntity(pos);
+			be.setActiveRecipe(recipeName);
+			((Level) world).sendBlockUpdated(be.getBlockPos(), be.getBlockState(), be.getBlockState(), Block.UPDATE_CLIENTS);
+		}
+		for (BlockPos pos : BlockPos.betweenClosed(
+			new BlockPos(structureBounds[0], structureBounds[4], structureBounds[2]),
+			new BlockPos(structureBounds[3], structureBounds[4], structureBounds[5])
+		)) { 
+			ScannerBlockEntity be = (ScannerBlockEntity) world.getBlockEntity(pos);
+			be.setActiveRecipe(recipeName);
+			((Level) world).sendBlockUpdated(be.getBlockPos(), be.getBlockState(), be.getBlockState(), Block.UPDATE_CLIENTS);
+		}
+	}
+
 	//Spawn particles for when the multiblock is broken or assembled
 	@OnlyIn(Dist.CLIENT)
 	public static void spawnParticles(int[] minpoint, int[] maxpoint, LevelAccessor world, SimpleParticleType particle){
@@ -209,14 +232,12 @@ public class ScannerMultiblock {
 			new BlockPos(maxpoint[0], minpoint[1], maxpoint[2])
 		)) { 
 			world.addParticle(particle, pos.getX(), pos.getY() + 2.0D, pos.getZ(), 0.0D, 0.0D, 0.0D);
-			System.out.println("Spawned a particle");
 		}
 		for (BlockPos pos : BlockPos.betweenClosed(
 			new BlockPos(minpoint[0], maxpoint[1], minpoint[2]),
 			new BlockPos(maxpoint[0], maxpoint[1], maxpoint[2])
 		)) { 
 			world.addParticle(particle, pos.getX(), pos.getY() + 2.0D, pos.getZ(), 0.0D, 0.0D, 0.0D);
-			System.out.println("Spawned a particle");
 		}
 
 	}
@@ -281,6 +302,7 @@ public class ScannerMultiblock {
 				if(entity instanceof ScannerBlockEntity){
 					((ScannerBlockEntity) entity).setStructure(new int[6]);
 					((ScannerBlockEntity) entity).setStructSize(new int[]{0,0,0});
+					((ScannerBlockEntity) entity).setActiveRecipe("");
 					((ScannerBlockEntity) entity).clearLeader();
 					((Level) world).sendBlockUpdated(pos, entity.getBlockState(), entity.getBlockState(), Block.UPDATE_CLIENTS);
 				}
@@ -294,6 +316,7 @@ public class ScannerMultiblock {
 				if(entity instanceof ScannerBlockEntity){
 					((ScannerBlockEntity) entity).setStructure(new int[6]);
 					((ScannerBlockEntity) entity).setStructSize(new int[]{0,0,0});
+					((ScannerBlockEntity) entity).setActiveRecipe("");
 					((ScannerBlockEntity) entity).clearLeader();
 					((Level) world).sendBlockUpdated(pos, entity.getBlockState(), entity.getBlockState(), Block.UPDATE_CLIENTS);
 				}

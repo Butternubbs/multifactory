@@ -24,6 +24,7 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.event.TickEvent;
@@ -34,6 +35,7 @@ import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.network.FriendlyByteBuf;
 
 import net.multifactory.init.MultifactoryModParticleTypes;
+import net.multifactory.network.ModMessages;
 import net.multifactory.screen.ScannerScreen;
 import net.multifactory.init.MultifactoryModItems;
 import net.multifactory.init.MultifactoryModMenuTypes;
@@ -68,7 +70,15 @@ public class MultifactoryMod {
 		MultifactoryModBlockEntities.REGISTRY.register(bus);
 		MultifactoryModParticleTypes.REGISTRY.register(bus);
 		MultifactoryModMenuTypes.MENUS.register(bus);
+		
+		bus.addListener(this::commonSetup);
 	}
+
+	private void commonSetup(final FMLCommonSetupEvent event) {
+        event.enqueueWork(() -> {
+            ModMessages.register();
+        });
+    }
 
 	private static final String PROTOCOL_VERSION = "1";
 	public static final SimpleChannel PACKET_HANDLER = NetworkRegistry.newSimpleChannel(new ResourceLocation(MODID, MODID), () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);

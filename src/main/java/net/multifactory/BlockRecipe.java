@@ -4,16 +4,22 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtIo;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.multifactory.config.CommonConfig;
+import net.multifactory.init.MultifactoryModBlocks;
+import net.multifactory.block.entity.ScannerBlockEntity;
 
 public class BlockRecipe {
     private String name;
@@ -84,12 +90,81 @@ public class BlockRecipe {
 		return blockData;
 	}
 
+    public static boolean checkShape(LevelAccessor world, BlockPos pos){
+		//Look at block entity data to get structure info
+		Block pingedType = world.getBlockState(pos).getBlock();
+		ScannerBlockEntity be;
+		if(pingedType == MultifactoryModBlocks.SCANNER_BOTTOM.get() ||
+		   pingedType == MultifactoryModBlocks.SCANNER_TOP.get()){
+			be = (ScannerBlockEntity) world.getBlockEntity(pos);
+			System.out.println("probably retrieved data from a scanner block");
+		}
+        else return false;
+		//If the block is not part of a structure, return
+		if(be.getActiveRecipe() == "") {System.out.println("No active recipe"); return false;}
+		int[] bounds = be.getStructure();
+		int[] size = be.getStructSize();
+
+		//Get the recipe from a specified .nbt file
+        BlockRecipe activeRecipe = null;
+		ArrayList<BlockRecipe> recipes = getBlockRecipes(size);
+        for(BlockRecipe recipe : recipes){
+            if(recipe.getName().equals(be.getActiveRecipe())){
+                activeRecipe = recipe;
+                break;
+            }
+        }
+		if(activeRecipe == null){
+			System.out.println("No recipe found.");
+			return false;
+		}
+
+		if(!validate(bounds, activeRecipe.getBlockTypes(), activeRecipe.getBlockData(), world)) return false;
+		clearBoundary(bounds, world);
+        be.insertItem(activeRecipe.outputItem);
+		return true;
+	}
+
+	public static boolean validate(int[] bounds, Block[] blockTypes, int[][][] blockData, LevelAccessor world){
+		//Compare the file data to the structure's bounded area. If it matches, good job!
+		for(int x = bounds[0]; x <= bounds[3]; x++){
+			for(int y = bounds[1] + 1; y < bounds[4]; y++){
+				for(int z = bounds[2]; z <= bounds[5]; z++){
+					if((world.getBlockState(new BlockPos(x, y, z))).getBlock() != blockTypes[blockData[x-bounds[0]][y-bounds[1]-1][z-bounds[2]]]) {
+						System.out.println("Input incorrect");
+						return false;
+					}
+				}
+			}
+		}
+		System.out.println("Input is correct");
+		return true;
+	}
+
+	//Clears the space inside the multiblock
+	public static void clearBoundary(int[] bounds, LevelAccessor world){
+		for(int x = bounds[0]; x <= bounds[3]; x++){
+			for(int y = bounds[1] + 1; y < bounds[4]; y++){
+				for(int z = bounds[2]; z <= bounds[5]; z++){
+					System.out.println("Clearing: " + x + " " + y + " " + z);
+					world.destroyBlock(new BlockPos(x, y, z), false);
+				}
+			}
+		}
+	}
+
     public String getName(){
         return name;
     }
 
+    public int[][][] getBlockData(){
+        return blockData;
+    }
+
+    public Block[] getBlockTypes(){
+        return blockTypes;
+    }
+
     public static void main(String[] args){
-        File file = new File(".");
-        System.out.println(file.getAbsolutePath());
     }
 }

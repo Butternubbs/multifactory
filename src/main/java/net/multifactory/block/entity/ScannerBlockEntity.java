@@ -36,7 +36,7 @@ import org.jetbrains.annotations.NotNull;
 public class ScannerBlockEntity extends BlockEntity implements MenuProvider {
 
     ScannerBlockEntity leader = this;
-	private final MultiblockItemStackHandler itemHandler = new MultiblockItemStackHandler(this, 4);
+	private final MultiblockItemStackHandler itemHandler = new MultiblockItemStackHandler(this, 3);
 
     private LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.empty();
 
@@ -202,5 +202,8 @@ public class ScannerBlockEntity extends BlockEntity implements MenuProvider {
     }
     public void setActiveRecipe(String recipe){
         activeRecipe = recipe;
+    }
+    public void insertItem(ItemStack itemStack){
+        itemHandler.insertItem(0, itemStack, false);
     }
 }
